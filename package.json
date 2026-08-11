@@ -1,0 +1,61 @@
+{
+  "name": "simple-invoice-generator",
+  "version": "1.0.0",
+  "description": "A simple offline Windows desktop invoice generator for freelancers and small businesses",
+  "main": "electron/main.js",
+  "author": "Simple Invoice Generator",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron .",
+    "test": "node tests/calculations.test.js && node tests/validation.test.js && node tests/storage.test.js",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
+    "dist:win": "electron-builder --win",
+    "dist:win:portable": "electron-builder --win portable"
+  },
+  "build": {
+    "appId": "com.simpleinvoice.generator",
+    "productName": "Simple Invoice Generator",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "electron/**/*",
+      "src/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "artifactName": "${productName}-${version}-${arch}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Simple Invoice Generator"
+    },
+    "portable": {
+      "artifactName": "${productName}-${version}-portable.${ext}"
+    }
+  },
+  "devDependencies": {
+    "electron": "^33.2.0",
+    "electron-builder": "^25.1.8"
+  }
+}

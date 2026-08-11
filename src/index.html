@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Simple Invoice Generator</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div id="app">
+    <header class="app-header">
+      <div class="brand-block">
+        <div class="brand-mark" aria-hidden="true"></div>
+        <div>
+          <h1>Simple Invoice Generator</h1>
+          <p>Create, save, and print professional invoices offline</p>
+        </div>
+      </div>
+      <div class="toolbar" role="toolbar" aria-label="Invoice actions">
+        <button type="button" id="btn-new" class="btn btn-secondary">New Invoice</button>
+        <button type="button" id="btn-save" class="btn btn-primary">Save Invoice</button>
+        <button type="button" id="btn-preview" class="btn btn-secondary">Preview</button>
+        <button type="button" id="btn-pdf" class="btn btn-secondary">Save PDF</button>
+        <button type="button" id="btn-print" class="btn btn-secondary">Print</button>
+        <button type="button" id="btn-history" class="btn btn-secondary">Invoice History</button>
+      </div>
+    </header>
+
+    <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+    <div id="error-banner" class="error-banner" hidden></div>
+
+    <main class="layout">
+      <section class="panel" aria-labelledby="business-heading">
+        <div class="panel-header">
+          <h2 id="business-heading">Business Information</h2>
+          <button type="button" id="btn-save-business" class="btn btn-small">Save Business Info</button>
+        </div>
+        <div class="form-grid">
+          <label>
+            <span>Business Name *</span>
+            <input type="text" id="business-name" autocomplete="organization" />
+          </label>
+          <label class="span-2">
+            <span>Address</span>
+            <input type="text" id="business-address" autocomplete="street-address" />
+          </label>
+          <label>
+            <span>Email</span>
+            <input type="email" id="business-email" autocomplete="email" />
+          </label>
+          <label>
+            <span>Phone</span>
+            <input type="tel" id="business-phone" autocomplete="tel" />
+          </label>
+        </div>
+      </section>
+
+      <section class="panel" aria-labelledby="customer-heading">
+        <div class="panel-header">
+          <h2 id="customer-heading">Customer Information</h2>
+        </div>
+        <div class="form-grid">
+          <label>
+            <span>Customer Name *</span>
+            <input type="text" id="customer-name" autocomplete="name" />
+          </label>
+          <label>
+            <span>Company Name</span>
+            <input type="text" id="customer-company" autocomplete="organization" />
+          </label>
+          <label class="span-2">
+            <span>Street Address</span>
+            <input type="text" id="customer-street" autocomplete="street-address" />
+          </label>
+          <label>
+            <span>City</span>
+            <input type="text" id="customer-city" autocomplete="address-level2" />
+          </label>
+          <label>
+            <span>State</span>
+            <input type="text" id="customer-state" autocomplete="address-level1" />
+          </label>
+          <label>
+            <span>ZIP Code</span>
+            <input type="text" id="customer-zip" autocomplete="postal-code" />
+          </label>
+          <label>
+            <span>Email</span>
+            <input type="email" id="customer-email" autocomplete="email" />
+          </label>
+          <label>
+            <span>Phone</span>
+            <input type="tel" id="customer-phone" autocomplete="tel" />
+          </label>
+        </div>
+      </section>
+
+      <section class="panel" aria-labelledby="invoice-heading">
+        <div class="panel-header">
+          <h2 id="invoice-heading">Invoice Information</h2>
+        </div>
+        <div class="form-grid">
+          <label>
+            <span>Invoice Number *</span>
+            <input type="text" id="invoice-number" />
+          </label>
+          <label>
+            <span>Invoice Date *</span>
+            <input type="date" id="invoice-date" />
+          </label>
+          <label>
+            <span>Due Date *</span>
+            <input type="date" id="due-date" />
+          </label>
+          <label>
+            <span>Payment Terms</span>
+            <input type="text" id="payment-terms" placeholder="e.g. Net 30" />
+          </label>
+          <label>
+            <span>Status</span>
+            <select id="invoice-status">
+              <option value="Draft">Draft</option>
+              <option value="Sent">Sent</option>
+              <option value="Paid">Paid</option>
+              <option value="Overdue">Overdue</option>
+            </select>
+          </label>
+          <label class="span-2">
+            <span>Notes</span>
+            <textarea id="invoice-notes" rows="3" placeholder="Thank you for your business."></textarea>
+          </label>
+        </div>
+      </section>
+
+      <section class="panel panel-wide" aria-labelledby="items-heading">
+        <div class="panel-header">
+          <h2 id="items-heading">Invoice Items</h2>
+          <button type="button" id="btn-add-item" class="btn btn-small btn-primary">Add Row</button>
+        </div>
+        <div class="table-wrap">
+          <table class="items-table" id="items-table">
+            <thead>
+              <tr>
+                <th class="col-desc">Description</th>
+                <th class="col-qty">Quantity</th>
+                <th class="col-price">Price</th>
+                <th class="col-total">Line Total</th>
+                <th class="col-actions">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="items-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel totals-panel" aria-labelledby="totals-heading">
+        <div class="panel-header">
+          <h2 id="totals-heading">Totals</h2>
+        </div>
+        <div class="totals-grid">
+          <label>
+            <span>Tax Percentage (%)</span>
+            <input type="number" id="tax-percent" min="0" step="0.01" value="0" />
+          </label>
+          <label>
+            <span>Discount ($)</span>
+            <input type="number" id="discount" min="0" step="0.01" value="0" />
+          </label>
+          <div class="totals-summary">
+            <div class="total-row">
+              <span>Subtotal</span>
+              <strong id="subtotal-display">$0.00</strong>
+            </div>
+            <div class="total-row">
+              <span>Tax Amount</span>
+              <strong id="tax-display">$0.00</strong>
+            </div>
+            <div class="total-row">
+              <span>Discount</span>
+              <strong id="discount-display">$0.00</strong>
+            </div>
+            <div class="total-row grand">
+              <span>Final Total</span>
+              <strong id="total-display">$0.00</strong>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="preview-modal" class="modal" hidden>
+    <div class="modal-backdrop" data-close-modal></div>
+    <div class="modal-dialog modal-large" role="dialog" aria-modal="true" aria-labelledby="preview-title">
+      <div class="modal-header">
+        <h2 id="preview-title">Invoice Preview</h2>
+        <button type="button" class="btn btn-small" data-close-modal>Close</button>
+      </div>
+      <div class="modal-body preview-frame-wrap">
+        <iframe id="preview-frame" title="Invoice preview"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <div id="history-modal" class="modal" hidden>
+    <div class="modal-backdrop" data-close-modal></div>
+    <div class="modal-dialog modal-large" role="dialog" aria-modal="true" aria-labelledby="history-title">
+      <div class="modal-header">
+        <h2 id="history-title">Invoice History</h2>
+        <button type="button" class="btn btn-small" data-close-modal>Close</button>
+      </div>
+      <div class="modal-body">
+        <div class="table-wrap">
+          <table class="history-table">
+            <thead>
+              <tr>
+                <th>Invoice #</th>
+                <th>Customer</th>
+                <th>Date</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="history-body">
+              <tr><td colspan="6" class="empty">No saved invoices yet.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/calculations.js"></script>
+  <script src="js/validation.js"></script>
+  <script src="js/invoice-document.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
