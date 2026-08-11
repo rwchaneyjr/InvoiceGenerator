@@ -39,17 +39,22 @@ These tests cover money calculations and invoice validation rules.
 
 ## Build a Windows distributable
 
-From a Windows machine (recommended):
+### Option A — GitHub Actions (recommended)
+
+1. Push to `main`, or run the **Build Windows EXE** workflow manually from the Actions tab.
+2. Download the artifact **Simple-Invoice-Generator-Windows**.
+3. Use either:
+   - `Simple Invoice Generator-1.0.0-x64.exe` (installer)
+   - `Simple Invoice Generator-1.0.0-portable.exe` (no install needed)
+
+### Option B — Build on a Windows PC
 
 ```bash
 npm install
 npm run dist:win
 ```
 
-Output files are written to the `dist/` folder:
-
-- **NSIS installer** — `Simple Invoice Generator-1.0.0-x64.exe`
-- **Portable app** — `Simple Invoice Generator-1.0.0-portable.exe`
+Output files are written to the `dist/` folder.
 
 You can also build only unpacked files for inspection:
 
@@ -61,7 +66,7 @@ npm run pack
 
 - `electron-builder` is already configured in `package.json`.
 - Optional custom icons can be placed in `build/` as `icon.ico` (Windows).
-- If you build Windows packages from Linux/macOS, follow the [electron-builder Windows docs](https://www.electron.build/configuration/win) for Wine/Mono requirements.
+- Windows packaging from Linux/macOS may require Wine; building on Windows or via GitHub Actions is the most reliable path.
 
 ## How data is stored
 
