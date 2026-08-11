@@ -36,7 +36,6 @@ jobs:
           name: Simple-Invoice-Generator-Windows
           path: |
             dist/*.exe
-            dist/*.exe.blockmap
           if-no-files-found: error
 
       - name: Publish GitHub Release (tags only)
